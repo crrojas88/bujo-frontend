@@ -1,0 +1,46 @@
+body {
+    background-color: #fff;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+header {
+    min-height: 100px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Source Serif Pro', serif;
+}
+
+header h1 {
+    display:inline;
+}
+
+nav {
+    text-align: right;
+}
+
+#bujoweek {
+    text-align: center;
+}
+
+#bujoweek h2 {
+    display:inline;
+}
+
+.bujoday {
+    border-bottom: 1px solid #eee;
+}
+
+footer {
+    text-align: center;
+}
+
+.modal {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
