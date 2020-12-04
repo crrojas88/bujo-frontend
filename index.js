@@ -8,6 +8,7 @@ const loginBtn = document.querySelector('.btn')
 loginBtn.addEventListener("click", (e) => {
     const name = e.target.parentElement.parentElement.children[1].children[0].children[2].value
     journalLogin(name)
+    
 })
 
 function journalLogin(name) {
@@ -20,6 +21,11 @@ function journalLogin(name) {
        hiddenClass[0].classList.remove('hidden')
        hiddenClass[0].classList.remove('hidden')
        
+       const headerDiv = document.querySelector('.col-8')
+       const userHeader = document.createElement('h1')
+       userHeader.innerText = `${name}'s Bullet Journal`
+       headerDiv.appendChild(userHeader)
+
        configObject = {
         method: "POST",
         headers: {
@@ -39,37 +45,77 @@ function journalLogin(name) {
 }
 
 function listEntries(json) {
-    json.entries.forEach((entry) => {
-        console.log(entry)
-        console.log(entry.task)
-        const listDiv = document.querySelector('.col-11')
+   
+    const listDiv = document.querySelector('.col-9')
         const ul = document.createElement("ul")
-        const li = document.createElement("li")
-        li.innerText = entry.task
-        ul.appendChild(li)
         listDiv.append(ul)
+
+    json.entries.forEach((entry) => {
+        // console.log(entry)
+        const li = document.createElement("li")
+        const div = document.createElement("div")
+        li.id = `list-item-${entry.id}`
+        li.innerText = entry.task
+        const save = document.createElement('button')
+        save.innerText = "save"
+        save.id = entry.id
+        save.addEventListener("click", saveEntries)
+        div.appendChild(li)
+        div.appendChild(save)   
+        li.setAttribute('class', 'list-item')
+        li.setAttribute('contentEditable', 'true')
+        ul.appendChild(div)
     })
 }
+// const saveBtn = document.querySelector('.save')
 
-function fetchEntries(){
 
-    fetch(entriesURL)
-    .then(response => response.json())
-    .then(entries => {
-        entries.forEach(populateEntries)
-    })
+function saveEntries(e) {
+    console.log(e)
+
+    const entryId = e.target.id
+    const entryLi = document.getElementById(`list-item-${entryId}`)
+    const entryText = entryLi.innerText
+    console.log(entryText)
+    
+
+    configObject = {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            task: entryText
+        })
+      };
+
+      fetch(`${entriesURL}/${entryId}`, configObject)
+      .then(response => response.json())
+      .then(console.log)
 
 }
 
+const hamMenu = document.querySelector('.dropdown-menu')
+const logoutBtn = document.querySelector('.dropdown-item')
+const divCol = document.querySelector('.col-8')
+const divCont = document.querySelector('.col-9')
+logoutBtn.addEventListener("click", () => {
+    const headerRow = document.querySelector('.row')
+    headerRow.classList.add('hidden')
+    const contentDiv = document.querySelector('#content')
+    contentDiv.classList.add('hidden')
+    divCol.innerHTML = ""
+    divCont.innerHTML = ""
+    journalLogout()
+})
 
-function populateEntries() {
+function journalLogout() {
 
+     // Jquery for the modal from bootstrap
+     $(document).ready(function(){
+		$("#modalLoginForm").modal('show');
+       });
+       
 }
 
-
-
-
-
-
-fetchEntries()
-// fetchUsers()
