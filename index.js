@@ -50,33 +50,74 @@ function listEntries(json) {
         const ul = document.createElement("ul")
         listDiv.append(ul)
 
+        const taskForm = document.getElementById('new-task')
+        taskForm.addEventListener('submit',(e) =>{
+            
+            createEntry(e, json)
+            taskForm.reset()
+
+        })
+
     json.entries.forEach((entry) => {
         // console.log(entry)
         const li = document.createElement("li")
         const div = document.createElement("div")
         li.id = `list-item-${entry.id}`
         li.innerText = entry.task
+        
         const save = document.createElement('button')
-        save.innerText = "save"
+        save.innerText = "Save"
         save.id = entry.id
         save.addEventListener("click", saveEntries)
-        div.appendChild(li)
-        div.appendChild(save)   
+
+        const deleteBtn = document.createElement('button')
+        deleteBtn.innerText = "Delete"
+        deleteBtn.id = entry.id
+        deleteBtn.addEventListener("click", deleteEntries)
+
+        // div.appendChild(li)
+        div.append(li, save, deleteBtn)   
         li.setAttribute('class', 'list-item')
         li.setAttribute('contentEditable', 'true')
         ul.appendChild(div)
     })
 }
-// const saveBtn = document.querySelector('.save')
+
+
+
+function createEntry(e, json) {
+    e.preventDefault()
+    // console.log(json)
+    const newEntry = e.target[0].value
+
+    configObject = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            task: newEntry,
+            user: json.id
+        })
+      };
+
+      fetch(entriesURL, configObject)
+      .then(response => response.json())
+    //   created data persists to db, now change DOM
+      .then(console.log)
+
+}
+
 
 
 function saveEntries(e) {
-    console.log(e)
+    // console.log(e)
 
     const entryId = e.target.id
     const entryLi = document.getElementById(`list-item-${entryId}`)
     const entryText = entryLi.innerText
-    console.log(entryText)
+    // console.log(entryText)
     
 
     configObject = {
@@ -92,8 +133,29 @@ function saveEntries(e) {
 
       fetch(`${entriesURL}/${entryId}`, configObject)
       .then(response => response.json())
-      .then(console.log)
+    //   .then(console.log)
 
+}
+
+function deleteEntries(e) {
+    console.log(e)
+    const deleteId = e.target.id
+    // const entryLi = document.getElementById(`list-item-${deleteId}`)
+
+    configObject = {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        }
+      };
+
+      fetch(`${entriesURL}/${deleteId}`, configObject)
+      .then(response => response.json())
+      .then(data => {
+          
+        e.target.parentElement.remove()
+    })
 }
 
 const hamMenu = document.querySelector('.dropdown-menu')
