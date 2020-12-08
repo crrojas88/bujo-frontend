@@ -75,7 +75,7 @@ function listEntries(json) {
         deleteBtn.id = entry.id
         deleteBtn.addEventListener("click", deleteEntries)
 
-        // div.appendChild(li)
+    
         div.append(li, save, deleteBtn)   
         li.setAttribute('class', 'list-item')
         li.setAttribute('contentEditable', 'true')
@@ -83,6 +83,17 @@ function listEntries(json) {
     })
 }
 
+function setDate() {
+    const currentDate = new Date()
+    const month = currentDate.getMonth()
+    const day = currentDate.getDate()
+    const year = currentDate.getFullYear()
+    const fullDate = `${month}/${day}/${year}`
+
+    const weekDiv = document.getElementById('bujoweek')
+    const weekH2 = document.querySelector('h2')
+    weekH2.innerText = `Week of ${fullDate}`
+}
 
 
 function createEntry(e, json) {
@@ -104,11 +115,35 @@ function createEntry(e, json) {
 
       fetch(entriesURL, configObject)
       .then(response => response.json())
-    //   created data persists to db, now change DOM
-      .then(console.log)
+      .then(newObj => {
+    
+        
+        const ul = document.querySelector('ul')
+        const listDiv = document.createElement("div")
+        const li = document.createElement("li")
+        li.setAttribute('class', 'list-item')
+        li.setAttribute('contentEditable', 'true')
+        li.id = `list-item-${newObj.id}`
+        li.innerText = newObj.task
+        
+        const save = document.createElement('button')
+        save.innerText = "Save"
+        save.id = newObj.id
+        save.addEventListener("click", saveEntries)
+
+        const deleteBtn = document.createElement('button')
+        deleteBtn.innerText = "Delete"
+        deleteBtn.id = newObj.id
+        deleteBtn.addEventListener("click", deleteEntries)
+
+    
+        listDiv.append(li, save, deleteBtn)   
+        ul.appendChild(listDiv)
+
+        
+      })
 
 }
-
 
 
 function saveEntries(e) {
@@ -133,12 +168,12 @@ function saveEntries(e) {
 
       fetch(`${entriesURL}/${entryId}`, configObject)
       .then(response => response.json())
-    //   .then(console.log)
+      .then(alert("Entry successfully saved!"))
 
 }
 
 function deleteEntries(e) {
-    console.log(e)
+    // console.log(e)
     const deleteId = e.target.id
     // const entryLi = document.getElementById(`list-item-${deleteId}`)
 
@@ -158,26 +193,27 @@ function deleteEntries(e) {
     })
 }
 
+function journalLogout() {
+    
 const hamMenu = document.querySelector('.dropdown-menu')
 const logoutBtn = document.querySelector('.dropdown-item')
-const divCol = document.querySelector('.col-8')
-const divCont = document.querySelector('.col-9')
+
 logoutBtn.addEventListener("click", () => {
+
+    const divCol = document.querySelector('.col-8')
+    const divCont = document.querySelector('.col-9')
     const headerRow = document.querySelector('.row')
     headerRow.classList.add('hidden')
     const contentDiv = document.querySelector('#content')
     contentDiv.classList.add('hidden')
     divCol.innerHTML = ""
     divCont.innerHTML = ""
-    journalLogout()
-})
-
-function journalLogout() {
-
-     // Jquery for the modal from bootstrap
-     $(document).ready(function(){
+    $(document).ready(function(){
 		$("#modalLoginForm").modal('show');
        });
-       
-}
 
+})    
+
+}
+journalLogout()
+setDate()
