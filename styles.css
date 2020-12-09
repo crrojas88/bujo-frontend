@@ -1,5 +1,4 @@
 body {
-    background-color: #fff;
     font-family: 'Source Sans Pro', sans-serif;
 }
 
@@ -9,6 +8,7 @@ header {
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Source Serif Pro', serif;
+    color: #33658A;
 }
 
 header h1 {
@@ -31,6 +31,9 @@ nav {
     border-bottom: 1px solid #eee;
 }
 
+.new-entry {
+    background-color: #33658A;
+}
 footer {
     text-align: center;
 }
@@ -40,7 +43,15 @@ footer {
     height: 100% !important;
 }
 
-.hidden {
+.hidden, .alert-task {
     visibility: hidden;
+}
+
+button a {
+    color: #33658A;
+}
+
+.material-icons.md-18 { 
+    font-size: 18px; 
 }
 

@@ -11,6 +11,7 @@ loginBtn.addEventListener("click", (e) => {
     
 })
 
+// journalLogin logs user in from the modal.
 function journalLogin(name) {
     // Jquery for the modal from bootstrap
     $(document).ready(function(){
@@ -43,7 +44,7 @@ function journalLogin(name) {
         listEntries(json)
     })
 }
-
+// listEntries sets each created entry on a list item for each user.
 function listEntries(json) {
    
     const listDiv = document.querySelector('.col-9')
@@ -62,16 +63,19 @@ function listEntries(json) {
         // console.log(entry)
         const li = document.createElement("li")
         const div = document.createElement("div")
+        div.id = `list-div-${entry.id}`
         li.id = `list-item-${entry.id}`
         li.innerText = entry.task
         
         const save = document.createElement('button')
-        save.innerText = "Save"
+        save.innerHTML = "<i class='material-icons md-18'>save</i>"
+        save.classList.add('btn' , 'btn-light')
         save.id = entry.id
         save.addEventListener("click", saveEntries)
 
         const deleteBtn = document.createElement('button')
-        deleteBtn.innerText = "Delete"
+        deleteBtn.innerHTML = "<i class='material-icons md-18'>delete</i>"
+        deleteBtn.classList.add('btn' , 'btn-light')
         deleteBtn.id = entry.id
         deleteBtn.addEventListener("click", deleteEntries)
 
@@ -82,10 +86,10 @@ function listEntries(json) {
         ul.appendChild(div)
     })
 }
-
+// setDate prints the current day for each user's journal.
 function setDate() {
     const currentDate = new Date()
-    const month = currentDate.getMonth()
+    const month = currentDate.getMonth() + 1
     const day = currentDate.getDate()
     const year = currentDate.getFullYear()
     const fullDate = `${month}/${day}/${year}`
@@ -95,7 +99,7 @@ function setDate() {
     weekH2.innerText = `Week of ${fullDate}`
 }
 
-
+// createEntry creates a list item for each new task created.
 function createEntry(e, json) {
     e.preventDefault()
     // console.log(json)
@@ -120,6 +124,7 @@ function createEntry(e, json) {
         
         const ul = document.querySelector('ul')
         const listDiv = document.createElement("div")
+        listDiv.id = `list-div-${newObj.id}`
         const li = document.createElement("li")
         li.setAttribute('class', 'list-item')
         li.setAttribute('contentEditable', 'true')
@@ -127,12 +132,14 @@ function createEntry(e, json) {
         li.innerText = newObj.task
         
         const save = document.createElement('button')
-        save.innerText = "Save"
+        save.innerHTML = "<i class='material-icons md-18'>save</i>"
+        save.classList.add('btn' , 'btn-light')
         save.id = newObj.id
         save.addEventListener("click", saveEntries)
 
         const deleteBtn = document.createElement('button')
-        deleteBtn.innerText = "Delete"
+        deleteBtn.innerHTML = "<i class='material-icons md-18'>delete</i>"
+        deleteBtn.classList.add('btn' , 'btn-light')
         deleteBtn.id = newObj.id
         deleteBtn.addEventListener("click", deleteEntries)
 
@@ -145,13 +152,21 @@ function createEntry(e, json) {
 
 }
 
-
+// saveEntries saves edited entries for each user.
 function saveEntries(e) {
-    // console.log(e)
-
-    const entryId = e.target.id
+    console.log(e.target.outerHTML)
+    console.dir(e.target)
+    // let target = String(e.target)
+    let entryId 
+    if (e.target.outerHTML == '<i class="material-icons md-18">save</i>') {
+      
+      entryId = e.target.parentElement.id
+    } else {
+      entryId = e.target.id
+    }
     const entryLi = document.getElementById(`list-item-${entryId}`)
-    const entryText = entryLi.innerText
+    const entryText = e.target.parentNode.previousSibling.innerText
+
     // console.log(entryText)
     
 
@@ -168,13 +183,25 @@ function saveEntries(e) {
 
       fetch(`${entriesURL}/${entryId}`, configObject)
       .then(response => response.json())
-      .then(alert("Entry successfully saved!"))
+      .then(entryEdit => {
+        const alertSuccess = document.querySelector('.alert-task')
+        alertSuccess.classList.remove('alert-task')
+      })
 
 }
 
+
+// deleteEntries deletes each entry from db and DOM for each user.
 function deleteEntries(e) {
-    // console.log(e)
-    const deleteId = e.target.id
+    // console.log(e.target.parentElement.id)
+    // const deleteId = e.target.parentElement.id
+    let deleteId 
+    if (e.target.outerHTML == '<i class="material-icons md-18">delete</i>') {
+      
+      deleteId = e.target.parentElement.id
+    } else {
+      deleteId = e.target.id
+    }
     // const entryLi = document.getElementById(`list-item-${deleteId}`)
 
     configObject = {
@@ -188,11 +215,15 @@ function deleteEntries(e) {
       fetch(`${entriesURL}/${deleteId}`, configObject)
       .then(response => response.json())
       .then(data => {
-          
-        e.target.parentElement.remove()
+          // console.log(e.target.parentElement.parentElement)
+          const entryUl = document.querySelector('ul')
+          const div = document.getElementById(`list-div-${deleteId}`)
+          entryUl.removeChild(div)
+        // e.target.parentElement.parentElement.remove()
     })
 }
 
+// journalLogout logs user out of journal. 
 function journalLogout() {
     
 const hamMenu = document.querySelector('.dropdown-menu')
