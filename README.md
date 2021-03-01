@@ -37,6 +37,12 @@ open index.html
 You should now have access to the application!
 ## Logging In
 You can use my name **Rodrigo Rojas** to log in and test the app.
+<br />
+## Images
+<img src="https://github.com/crrojas88/bujo-frontend/blob/main/BuJo-login.png" alt="login page" width="500" height="320" />
+<br />
+<img src="https://github.com/crrojas88/bujo-frontend/blob/main/BuJo-main.png" alt="main page" width="500" height="320" />
+<br />
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
